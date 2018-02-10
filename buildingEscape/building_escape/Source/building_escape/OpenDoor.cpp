@@ -1,10 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "OpenDoor.h"
-#include "GameFramework/Actor.h"
-#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
-#include "GameFramework/Controller.h"
-#include "GameFramework/WorldSettings.h"
+#include "Runtime/Engine/Classes/GameFramework/Actor.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -21,31 +19,20 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	Owner = GetOwner();
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::OpenDoor()
 {
-	AActor* Owner = GetOwner();
-	FRotator ObjectionRotation = Owner->GetActorRotation();
-	FRotator DoorRotate(0.0f, -60.0f, 0.0f);
-	//UE_LOG(LogTemp, Warning, TEXT("Object before rotation: %s"), *Owner->GetActorRotation().ToString());
-	Owner->SetActorRotation(DoorRotate);
-	//UE_LOG(LogTemp, Warning, TEXT("Object after rotation: %s"), *Owner->GetActorRotation().ToString());
-	// ...
+	Owner->SetActorRotation(FRotator(0.0f, -1.0 * OpenAngle, 0.0f));
 }
 
 
 void UOpenDoor::CloseDoor()
 {
-	AActor* Owner = GetOwner();
-	FRotator ObjectionRotation = Owner->GetActorRotation();
-	FRotator DoorRotate(0.0f, 0.0f, 0.0f);
-	//UE_LOG(LogTemp, Warning, TEXT("Object before rotation: %s"), *Owner->GetActorRotation().ToString());
-	Owner->SetActorRotation(DoorRotate);
-	//UE_LOG(LogTemp, Warning, TEXT("Object after rotation: %s"), *Owner->GetActorRotation().ToString());
-	// ...
+	
+	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 }
 
 // Called every frame
@@ -58,10 +45,14 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
 	{
 		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
-	else
+
+
+	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay)
 	{
 		CloseDoor();
 	}
+
 }
 
