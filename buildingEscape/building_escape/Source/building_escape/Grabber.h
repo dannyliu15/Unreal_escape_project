@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
+#include "Runtime/Engine/Classes/Components/InputComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
-
 #include "Grabber.generated.h"
 
 
@@ -31,5 +31,12 @@ public:
 private:
 	// How far ahead of the player can we reach in cm
 	float reach = 100.0f;
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	
+	UInputComponent* InputHandle = nullptr;
+
+	// Ray-cast and grab what's in reach
+	void Grab();
+
 };

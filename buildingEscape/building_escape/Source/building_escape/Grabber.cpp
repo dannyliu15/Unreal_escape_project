@@ -23,6 +23,32 @@ void UGrabber::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT(" Grabber reporting for duty !"));
 	
+	/// Look for attached Physics Handle
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle)
+	{
+		// 
+	}
+	else
+	{
+
+		UE_LOG(LogTemp, Error, TEXT(" Failed to find PhysicsHandle, calling object: %s !"), *GetOwner()->GetName());
+
+	}
+	InputHandle = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputHandle)
+	{
+		UE_LOG(LogTemp, Warning, TEXT(" Find InputHandle, calling object: %s !"), *GetOwner()->GetName());
+		/// Bind the input axis
+		InputHandle->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+	else
+	{
+
+		UE_LOG(LogTemp, Error, TEXT(" Failed to find InputHandle, calling object: %s !"), *GetOwner()->GetName());
+
+	}
+
 }
 
 
@@ -75,6 +101,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		// MUST check if ObjectHit is not NULL !!!
 		UE_LOG(LogTemp, Warning, TEXT(" Line-trace hit on %s "), *ObjectHit->GetName());
 	}
+
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT(" Grab function called"));
 
 }
 
