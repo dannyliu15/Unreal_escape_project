@@ -11,6 +11,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4", "Intermediate\Project
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "building_escape", "Intermediate\ProjectFiles\building_escape.vcxproj", "{908691A1-453F-44FB-8486-B661083FDF18}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{B136DC53-617B-4052-80F0-BE01A08FFE70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{DBADC0D9-BE7D-4A85-9D07-8C3A1E25B0D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DebugGame Editor|HTML5 = DebugGame Editor|HTML5
@@ -95,6 +99,8 @@ Global
 		{908691A1-453F-44FB-8486-B661083FDF18} = {1A9983A4-3D38-4EEC-A5AD-3EB73C74667F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		{3CEE98EC-8872-4E13-A300-4AF41FD9E7EA} = {DBADC0D9-BE7D-4A85-9D07-8C3A1E25B0D8}
+		{3CC857A1-0111-452E-B033-74057EFF098D} = {B136DC53-617B-4052-80F0-BE01A08FFE70}
 		SolutionGuid = {3292C3E8-A8C3-428B-A790-E4ACC7C6B740}
 	EndGlobalSection
 EndGlobal

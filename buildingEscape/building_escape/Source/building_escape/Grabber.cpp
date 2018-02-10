@@ -41,6 +41,7 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT(" Find InputHandle, calling object: %s !"), *GetOwner()->GetName());
 		/// Bind the input axis
 		InputHandle->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputHandle->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
 	{
@@ -108,5 +109,10 @@ void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT(" Grab function called"));
 
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT(" Release function called"));
 }
 

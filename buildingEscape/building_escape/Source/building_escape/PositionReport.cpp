@@ -19,6 +19,7 @@ void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	FString ObjectName = GetOwner()->GetName();
 	FTransform ObjectTransform =  GetOwner()->GetTransform();
 	FVector ObjectTranslation = ObjectTransform.GetTranslation();
