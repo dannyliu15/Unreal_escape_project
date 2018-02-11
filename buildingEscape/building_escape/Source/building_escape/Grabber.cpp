@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Grabber.h"
-#include "Engine/EngineTypes.h"
+
 
 #define OUT
 
@@ -20,21 +20,14 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT(" Grabber reporting for duty !"));
 	
-	/// Look for attached Physics Handle
-	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
-	{
-		// 
-	}
-	else
-	{
+	FindPhysicsHandleComponent();
+	FindInputHandleComponent();
 
-		UE_LOG(LogTemp, Error, TEXT(" Failed to find PhysicsHandle, calling object: %s !"), *GetOwner()->GetName());
+}
 
-	}
+void UGrabber::FindInputHandleComponent()
+{
 	InputHandle = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputHandle)
 	{
@@ -49,7 +42,22 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT(" Failed to find InputHandle, calling object: %s !"), *GetOwner()->GetName());
 
 	}
+}
 
+void UGrabber::FindPhysicsHandleComponent()
+{
+	/// Look for attached Physics Handle
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle)
+	{
+		// 
+	}
+	else
+	{
+
+		UE_LOG(LogTemp, Error, TEXT(" Failed to find PhysicsHandle, calling object: %s !"), *GetOwner()->GetName());
+
+	}
 }
 
 
@@ -58,18 +66,25 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	/// Get player view point this tick
-	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotation;
+	// if the physics handle is attached
+	if (PhysicsHandle->GrabbedComponent)
+	{
+		// move the object that we're holding
+		FVector PlayerViewPointLocation;
+		FRotator PlayerViewPointRotation;
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+			OUT PlayerViewPointLocation,
+			OUT PlayerViewPointRotation);
+		FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * reach;
 
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		OUT PlayerViewPointLocation, 
-		OUT PlayerViewPointRotation);
-	//UE_LOG(LogTemp, Warning, TEXT(" Player location: %s, Player rotation: %s "), *PlayerLocation.ToString(), *PlayerRotation.ToString()  );
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
 
-	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * reach;
+	}
+	
+}
 
-
+void UGrabber::MyDrawDebugLine(FVector &PlayerViewPointLocation, FVector &LineTraceEnd)
+{
 	DrawDebugLine(
 		GetWorld(),
 		PlayerViewPointLocation,
@@ -80,6 +95,53 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		0,
 		10.0f
 	);
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT(" Grab function called"));
+
+	// LineTrace: Try and reach any actors with physics body collision channel set
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
+	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
+	AActor *ActorHit = HitResult.GetActor();
+
+	// If we hit somethng then attach a physics handle
+	if (ActorHit)
+	{
+		// attach physics handle
+		/// Get player view point this tick
+		PhysicsHandle->GrabComponentAtLocationWithRotation(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			ComponentToGrab->GetOwner()->GetActorRotation()
+		);
+	}
+	
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT(" Release function called"));
+	PhysicsHandle->ReleaseComponent();
+	// TODO release physics handle
+
+}
+
+FHitResult UGrabber::GetFirstPhysicsBodyInReach()
+{
+	/// Get player view point 
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT PlayerViewPointLocation,
+		OUT PlayerViewPointRotation);
+	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * reach;
+
+
+	// MyDrawDebugLine(PlayerViewPointLocation, LineTraceEnd);
 
 	/// Setup query parameters
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
@@ -101,18 +163,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	{
 		// MUST check if ObjectHit is not NULL !!!
 		UE_LOG(LogTemp, Warning, TEXT(" Line-trace hit on %s "), *ObjectHit->GetName());
+		return Hit;
 	}
 
-}
-
-void UGrabber::Grab()
-{
-	UE_LOG(LogTemp, Warning, TEXT(" Grab function called"));
-
-}
-
-void UGrabber::Release()
-{
-	UE_LOG(LogTemp, Warning, TEXT(" Release function called"));
+	return Hit;
 }
 

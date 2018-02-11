@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+
+#include "Classes/Components/PrimitiveComponent.h"
+#include "Engine/EngineTypes.h"
 #include "Runtime/Engine/Classes/Components/InputComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "CoreMinimal.h"
@@ -24,9 +27,23 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+
+
+
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	FHitResult GetFirstPhysicsBodyInReach();
+
+	void MyDrawDebugLine(FVector &PlayerViewPointLocation, FVector &LineTraceEnd);
+	
+	// Find (assumed) attached physics handle
+	void FindPhysicsHandleComponent();
+	
+	// Setup (assumed) attached input component
+	void FindInputHandleComponent();
 
 private:
 	// How far ahead of the player can we reach in cm
