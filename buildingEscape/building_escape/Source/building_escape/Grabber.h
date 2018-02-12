@@ -14,6 +14,13 @@
 
 
 
+struct LineTraceInfo
+{
+	FVector end;
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDING_ESCAPE_API UGrabber : public UActorComponent
 {
@@ -35,8 +42,12 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	FHitResult GetFirstPhysicsBodyInReach();
+	// Get the hit result
+	FHitResult GetPhysicsHitResultInReach();
+	
+	LineTraceInfo GetReachLine();
 
+	// Draw the debug line from player position to LineTraceEnd
 	void MyDrawDebugLine(FVector &PlayerViewPointLocation, FVector &LineTraceEnd);
 	
 	// Find (assumed) attached physics handle

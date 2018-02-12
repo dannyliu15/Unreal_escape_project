@@ -13,6 +13,7 @@ buildingEscape/building_escape/Content/StarterContent/
 ####################
 *.VC.db
 *.VC.opendb
+*.sln
 
 buildingEscape/building_escape/.vs/building_escape/v15/ipch/AutoPCH/
 *.db-shm
