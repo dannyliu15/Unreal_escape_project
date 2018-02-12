@@ -2,11 +2,14 @@
 
 #pragma once
 
+#include "Classes/Components/PrimitiveComponent.h"
+#include "Engine/CollisionProfile.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
+#include "Runtime/Engine/Classes/GameFramework/Actor.h"
+#include "Engine/World.h"
 
-// Always include the .generated.h file last !!!!
 #include "OpenDoor.generated.h"
 
 
@@ -20,6 +23,7 @@ public:
 	UOpenDoor();
 	void OpenDoor();
 	void CloseDoor();
+
 
 protected:
 	// Called when the game starts
@@ -44,6 +48,9 @@ private:
 	float LastDoorOpenTime;
 		
 		
-	AActor* ActorThatOpens; 
 	AActor* Owner;
+
+	// Return total mass into kilogram
+	float GetTotalMassOfActorsOnPlate();
+
 };
