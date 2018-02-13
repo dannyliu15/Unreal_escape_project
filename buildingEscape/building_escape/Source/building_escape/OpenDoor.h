@@ -9,9 +9,9 @@
 #include "Engine/TriggerVolume.h"
 #include "Runtime/Engine/Classes/GameFramework/Actor.h"
 #include "Engine/World.h"
-
 #include "OpenDoor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDING_ESCAPE_API UOpenDoor : public UActorComponent
@@ -24,6 +24,8 @@ public:
 	void OpenDoor();
 	void CloseDoor();
 
+	UPROPERTY(BlueprintAssignable)
+	FOnOpenRequest OnOpenRequest;
 
 protected:
 	// Called when the game starts
@@ -40,15 +42,15 @@ private:
 	float OpenAngle = 85.0f;
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
+	ATriggerVolume* PressurePlate = nullptr;
 	
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 0.6f;
 
 	float LastDoorOpenTime;
 		
-		
-	AActor* Owner;
+	// The owning door
+	AActor* Owner = nullptr;
 
 	// Return total mass into kilogram
 	float GetTotalMassOfActorsOnPlate();
